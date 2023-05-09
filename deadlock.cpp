@@ -8,6 +8,7 @@ int main() {
 	int numResources = 5;
 	int numProcesses = 3;
 	vector<int> available;
+	vector<bool> finished;
 
 	// allocate
 	int** alloc = new int* [numResources];
