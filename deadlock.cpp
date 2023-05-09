@@ -7,7 +7,7 @@ using namespace std;
 int main() {
 	int numResources = 5;
 	int numProcesses = 3;
-	//vector<int> available(m);
+	vector<int> available;
 
 	// allocate
 	int** alloc = new int* [numResources];
@@ -25,6 +25,7 @@ int main() {
 
 	readMatrix("alloc.txt", alloc, numResources, numProcesses);
 	readMatrix("max.txt", max, numResources, numProcesses);
+	readVector("available.txt", available, numProcesses);
 
 	calculateNeed(need, alloc, max, numResources, numProcesses);
 
@@ -36,6 +37,10 @@ int main() {
 	cout << endl;
 	cout << "Need: \n";
 	print(need, numResources, numProcesses);
+	cout << endl;
+	cout << "Available: \n";
+	for (int i = 0; i < available.size(); i++)
+		cout << available[i] << " ";
 
 	// dispose
 	for (int i = 0; i < numResources; i++) {

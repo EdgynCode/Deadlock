@@ -30,7 +30,7 @@ void calculateNeed(int** need, int** alloc, int** max, int m, int n) {
 	}
 }
 
-void readVector(string fn, vector<int> vec, int n) {
+void readVector(string fn, vector<int>& vec, int n) {
 	ifstream fi;
 	int tmp;
 	try {
