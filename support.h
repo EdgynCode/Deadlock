@@ -46,7 +46,7 @@ void readVector(string fn, vector<int>& vec, int n) {
 	}
 }
 
-void tableView(int** alloc, int** max, int** need, vector<int> available, vector<bool> finished, int m, int n) {
+void tableView(int** alloc, int** max, int** need, vector<int> available, int m, int n) {
 	cout << "Available: ";
 	for (int i = 0; i < available.size(); i++)
 		cout << available[i] << " ";
@@ -54,8 +54,7 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, vector
 	
 	cout << left << "Alloc"
 		 << "\t" << left << "Max"
-		 << "\t" << left << "Need"
-		 << "\t" << left << "Finished" << endl;
+		 << "\t" << left << "Need" << endl;
 	
 	cout << setfill('-') << setw(45) << "" << endl;
 
@@ -74,12 +73,6 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, vector
 		for (int j = 0; j < n; j++) {
 			cout << need[i][j] << " ";
 		}
-		cout << "\t";
-		// print finished
-		if (finished[i] == 1)
-			cout << "true";
-		else cout << "false";
-
 		cout << "\n";
 	}
 }
