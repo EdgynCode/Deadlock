@@ -46,33 +46,40 @@ void readVector(string fn, vector<int>& vec, int n) {
 	}
 }
 
-//void print(int** matrix, int m, int n) {
-//	for (int i = 0; i < m; i++) {
-//		for (int j = 0; j < n; j++) {
-//			cout << matrix[i][j] << " ";
-//		}
-//		cout << "\n";
-//	}
-//}
-
-void tableView(int** alloc, int** max, int** need, int m, int n) {
+void tableView(int** alloc, int** max, int** need, vector<int> available, vector<bool> finished, int m, int n) {
+	cout << "Available: ";
+	for (int i = 0; i < available.size(); i++)
+		cout << available[i] << " ";
+	cout << endl;
+	
 	cout << left << "Alloc"
-		 << "\t\t" << left << "Max"
-		 << "\t\t" << left << "Need" << endl;
+		 << "\t" << left << "Max"
+		 << "\t" << left << "Need"
+		 << "\t" << left << "Finished" << endl;
+	
 	cout << setfill('-') << setw(45) << "" << endl;
 
 	for (int i = 0; i < m; i++) {
+		// print alloc
 		for (int j = 0; j < n; j++) {
 			cout << alloc[i][j] << " ";
 		}
-		cout << "\t\t";
+		cout << "\t";
+		// print max
 		for (int j = 0; j < n; j++) {
 			cout << max[i][j] << " ";
 		}
-		cout << "\t\t";
+		// print need
+		cout << "\t";
 		for (int j = 0; j < n; j++) {
 			cout << need[i][j] << " ";
 		}
+		cout << "\t";
+		// print finished
+		if (finished[i] == 1)
+			cout << "true";
+		else cout << "false";
+
 		cout << "\n";
 	}
 }
