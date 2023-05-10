@@ -46,10 +46,32 @@ void readVector(string fn, vector<int>& vec, int n) {
 	}
 }
 
-void print(int** matrix, int m, int n) {
+//void print(int** matrix, int m, int n) {
+//	for (int i = 0; i < m; i++) {
+//		for (int j = 0; j < n; j++) {
+//			cout << matrix[i][j] << " ";
+//		}
+//		cout << "\n";
+//	}
+//}
+
+void tableView(int** alloc, int** max, int** need, int m, int n) {
+	cout << left << "Alloc"
+		 << "\t\t" << left << "Max"
+		 << "\t\t" << left << "Need" << endl;
+	cout << setfill('-') << setw(45) << "" << endl;
+
 	for (int i = 0; i < m; i++) {
 		for (int j = 0; j < n; j++) {
-			cout << matrix[i][j] << " ";
+			cout << alloc[i][j] << " ";
+		}
+		cout << "\t\t";
+		for (int j = 0; j < n; j++) {
+			cout << max[i][j] << " ";
+		}
+		cout << "\t\t";
+		for (int j = 0; j < n; j++) {
+			cout << need[i][j] << " ";
 		}
 		cout << "\n";
 	}

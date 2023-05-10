@@ -1,6 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<vector>
+#include<iomanip>
 #include"support.h"
 using namespace std;
 
@@ -30,19 +31,8 @@ int main() {
 
 	calculateNeed(need, alloc, max, numResources, numProcesses);
 
-	cout << "Alloc: \n";
-	print(alloc, numResources, numProcesses);
-	cout << endl;
-	cout << "Max: \n";
-	print(max, numResources, numProcesses);
-	cout << endl;
-	cout << "Need: \n";
-	print(need, numResources, numProcesses);
-	cout << endl;
-	cout << "Available: \n";
-	for (int i = 0; i < available.size(); i++)
-		cout << available[i] << " ";
-
+	tableView(alloc, max, need, numResources, numProcesses);
+	
 	// dispose
 	for (int i = 0; i < numResources; i++) {
 		delete[] alloc[i];
