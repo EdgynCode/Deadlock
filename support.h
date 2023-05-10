@@ -4,6 +4,12 @@
 #include<vector>
 using namespace std;
 
+void readMatrix(string fn, int** matrix, int m, int n);
+void readVector(string fn, vector<int>& vec, int n);
+void calculateNeed(int** need, int** alloc, int** max, int m, int n);
+void tableView(int** alloc, int** max, int** need, vector<int> available, int m, int n);
+bool safetyAlgo(int** alloc, int** need, vector<int> available);
+
 void readMatrix(string fn, int** matrix, int m, int n) {
 	ifstream fi;
 	try {
@@ -75,4 +81,50 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, int m,
 		}
 		cout << "\n";
 	}
+}
+
+bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> finished, int P, int R) {
+	vector<int> work;
+	vector<int> safeSeq;
+	for (int i = 0; i < available.size(); i++)
+		work.push_back(available[i]);
+
+	for (int i = 0; i < P; i++)
+		safeSeq.push_back(0);
+
+	int index = 0;
+	while (index < P) {
+		bool found = false;
+		for (int i = 0; i < P; i++) {
+			if (finished[i] == 0) {
+				int j;
+				for (j = 0; j < R; j++) {
+					if (need[i][j] > work[j])
+						break;
+				}
+
+				if (j == R) {
+					for (int k = 0; k < R; k++) {
+						work[k] += alloc[i][k];
+					}
+
+					safeSeq[index++] = i;
+
+					finished[i] = 1;
+
+					found = true;
+				}
+			}
+		}
+		if (found == false) {
+			cout << "System is not in safe state";
+			return false;
+		}
+	}
+
+	cout << "System is in safe state.\nSafe sequence is: ";
+	for (int i = 0; i < P; i++)
+		cout << "P" << safeSeq[i] << " ";
+
+	return true;
 }

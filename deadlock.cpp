@@ -34,45 +34,7 @@ int main() {
 	tableView(alloc, max, need, available, numProcesses, numResources);
 
 	// solve
-	int safeSeq[numProcesses]{};
-	vector<int> work;
-	for (int i = 0; i < available.size(); i++) {
-		work.push_back(available[i]);
-	}
-
-	int index = 0;
-	while (index < numProcesses) {
-		bool found = false;
-		for (int i = 0; i < numProcesses; i++) {
-			if (finished[i] == 0) {
-				int j;
-				for (j = 0; j < numResources; j++) {
-					if (need[i][j] > work[j])
-						break;
-				}
-
-				if (j == numResources) {
-					for (int k = 0; k < numResources; k++) {
-						work[k] += alloc[i][k];
-					}
-
-					safeSeq[index++] = i;
-
-					finished[i] = 1;
-
-					found = true;
-				}
-			}
-		}
-		if (found == false) {
-			cout << "System is not in safe state";
-			return 0;
-		}
-	}
-
-	cout << "System is in safe state.\nSafe sequence is: ";
-	for (int i = 0; i < numProcesses; i++)
-		cout << "P" << safeSeq[i] << " ";
+	safetyAlgo(alloc, need, available, finished, numProcesses, numResources);
 
 
 	// dispose
