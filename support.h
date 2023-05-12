@@ -84,19 +84,29 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, int m,
 }
 
 bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> finished, int P, int R) {
+	// init
 	vector<int> work;
 	vector<int> safeSeq;
+
+	// work = available
 	for (int i = 0; i < available.size(); i++)
 		work.push_back(available[i]);
 
+	// safe sequence init
 	for (int i = 0; i < P; i++)
 		safeSeq.push_back(0);
 
+	// While all processes are not finished or system is not in safe state.
 	int index = 0;
 	while (index < P) {
+		// Find a process which is not finish and whose needs can be satisfied with current work[] resources.
 		bool found = false;
 		for (int i = 0; i < P; i++) {
+
+			// Check if a process is finished
 			if (finished[i] == 0) {
+
+				// need[i] > work: break
 				int j;
 				for (j = 0; j < R; j++) {
 					if (need[i][j] > work[j])
@@ -104,12 +114,16 @@ bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> fin
 				}
 
 				if (j == R) {
+
+					// free resources
 					for (int k = 0; k < R; k++) {
 						work[k] += alloc[i][k];
 					}
 
+					// add to safe sequence
 					safeSeq[index++] = i;
 
+					// mark as finished
 					finished[i] = 1;
 
 					found = true;
