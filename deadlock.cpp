@@ -34,11 +34,11 @@ int main() {
 	safetyAlgo(alloc, need, available, finished, numProcesses, numResources);
 
 	// resource allocation
-	request[0] = 1;
-	request[1] = 0;
-	request[2] = 2;
+	request[0] = 3;
+	request[1] = 3;
+	request[2] = 0;
 	cout << endl;
-	resourceAllocation(alloc, max, need, request, finished, available, numProcesses, numResources, 1);
+	resourceAllocation(alloc, max, need, request, finished, available, numProcesses, numResources, 4);
 
 	// dispose
 	for (int i = 0; i < numProcesses; i++) {

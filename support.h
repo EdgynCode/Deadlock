@@ -14,7 +14,7 @@ bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> fin
 // resource allocation
 bool compare(vector<int> request, int R, int** need, int i);
 bool compare(vector<int> request, vector<int> available, int R);
-bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request, vector<bool> finished, vector<int> available, int P, int R, int i) {
+bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request, vector<bool> finished, vector<int> available, int P, int R, int i);
 
 void readMatrix(string fn, int** matrix, int m, int n) {
 	ifstream fi;
@@ -162,7 +162,15 @@ bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request,
 				need[i][j] -= request[j];
 			}
 			tableView(alloc, max, need, available, P, R);
-			safetyAlgo(alloc, need, available, finished, P, R);
+			if (!safetyAlgo(alloc, need, available, finished, P, R)) {
+				for (int j = 0; j < R; j++) {
+					available[j] += request[j];
+					alloc[i][j] -= request[j];
+					need[i][j] += request[j];
+				}
+				tableView(alloc, max, need, available, P, R);
+				safetyAlgo(alloc, need, available, finished, P, R);
+			}
 		}
 		else safetyAlgo(alloc, need, available, finished, P, R);
 	}
