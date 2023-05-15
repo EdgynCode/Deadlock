@@ -8,7 +8,13 @@ void readMatrix(string fn, int** matrix, int m, int n);
 void readVector(string fn, vector<int>& vec, int n);
 void calculateNeed(int** need, int** alloc, int** max, int m, int n);
 void tableView(int** alloc, int** max, int** need, vector<int> available, int m, int n);
-bool safetyAlgo(int** alloc, int** need, vector<int> available);
+// safety check
+bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> finished, int P, int R);
+
+// resource allocation
+bool compare(vector<int> request, int R, int** need, int i);
+bool compare(vector<int> request, vector<int> available, int R);
+bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request, vector<bool> finished, vector<int> available, int P, int R, int i) {
 
 void readMatrix(string fn, int** matrix, int m, int n) {
 	ifstream fi;
@@ -57,11 +63,11 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, int m,
 	for (int i = 0; i < available.size(); i++)
 		cout << available[i] << " ";
 	cout << endl;
-	
+
 	cout << left << "Alloc"
-		 << "\t" << left << "Max"
-		 << "\t" << left << "Need" << endl;
-	
+		<< "\t" << left << "Max"
+		<< "\t" << left << "Need" << endl;
+
 	cout << setfill('-') << setw(45) << "" << endl;
 
 	for (int i = 0; i < m; i++) {
@@ -140,5 +146,43 @@ bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> fin
 	for (int i = 0; i < P; i++)
 		cout << "P" << safeSeq[i] << " ";
 
+	return true;
+}
+
+bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request, vector<bool> finished, vector<int> available, int P, int R, int i) {
+	if (!compare(request, R, need, i)) {
+		cout << "Overflow.";
+		return false;
+	}
+	else {
+		if (compare(request, available, R)) {
+			for (int j = 0; j < R; j++) {
+				available[j] -= request[j];
+				alloc[i][j] += request[j];
+				need[i][j] -= request[j];
+			}
+			tableView(alloc, max, need, available, P, R);
+			safetyAlgo(alloc, need, available, finished, P, R);
+		}
+		else safetyAlgo(alloc, need, available, finished, P, R);
+	}
+	return true;
+}
+
+bool compare(vector<int> request, int R, int** need, int i) {
+	for (int j = 0; j < R; j++) {
+		if (request[j] > need[i][j]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool compare(vector<int> request, vector<int> available, int R) {
+	for (int j = 0; j < R; j++) {
+		if (request[j] > available[j]) {
+			return false;
+		}
+	}
 	return true;
 }

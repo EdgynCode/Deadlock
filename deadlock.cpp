@@ -10,18 +10,15 @@ int main() {
 	const int numResources = 3;
 	vector<int> available;
 	vector<bool> finished(numProcesses);
+	vector<int> request(numResources);
 
 	// allocate
 	int** alloc = new int* [numProcesses];
-	for (int i = 0; i < numProcesses; i++) {
-		alloc[i] = new int[numResources];
-	}
 	int** max = new int* [numProcesses];
-	for (int i = 0; i < numProcesses; i++) {
-		max[i] = new int[numResources];
-	}
 	int** need = new int* [numProcesses];
 	for (int i = 0; i < numProcesses; i++) {
+		alloc[i] = new int[numResources];
+		max[i] = new int[numResources];
 		need[i] = new int[numResources];
 	}
 
@@ -36,6 +33,12 @@ int main() {
 	// solve
 	safetyAlgo(alloc, need, available, finished, numProcesses, numResources);
 
+	// resource allocation
+	request[0] = 1;
+	request[1] = 0;
+	request[2] = 2;
+	cout << endl;
+	resourceAllocation(alloc, max, need, request, finished, available, numProcesses, numResources, 1);
 
 	// dispose
 	for (int i = 0; i < numProcesses; i++) {
