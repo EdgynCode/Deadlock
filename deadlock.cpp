@@ -10,45 +10,63 @@ int main() {
 	const int numResources = 3;
 	vector<int> available;
 	vector<bool> finished(numProcesses);
-	vector<int> request(numResources);
 
 	// allocate
 	int** alloc = new int* [numProcesses];
 	int** max = new int* [numProcesses];
 	int** need = new int* [numProcesses];
+	int** request = new int* [numProcesses];
 	for (int i = 0; i < numProcesses; i++) {
 		alloc[i] = new int[numResources];
 		max[i] = new int[numResources];
 		need[i] = new int[numResources];
+		request[i] = new int[numResources];
 	}
 
 	readMatrix("alloc.txt", alloc, numProcesses, numResources);
 	readMatrix("max.txt", max, numProcesses, numResources);
 	readVector("available.txt", available, numResources);
+	readMatrix("request.txt", request, numProcesses, numResources);
 
 	calculateNeed(need, alloc, max, numProcesses, numResources);
 
 	tableView(alloc, max, need, available, numProcesses, numResources);
 
-	// solve
-	safetyAlgo(alloc, need, available, finished, numProcesses, numResources);
+	cout << endl << endl;
 
-	// resource allocation
-	request[0] = 3;
-	request[1] = 3;
-	request[2] = 0;
-	cout << endl;
-	resourceAllocation(alloc, max, need, request, finished, available, numProcesses, numResources, 4);
+	int n;
+	cout << "1. Perform safety check.\n";
+	cout << "2. Check if resources allocatable.\n";
+	cout << "3. Deadlock detection.\n";
+	cout << "0. Exit.\n";
+	cout << "Choose an option: \n"; cin >> n;
+
+	switch (n) {
+	case 0:
+		return 0;
+	case 1:
+		safetyAlgo(alloc, need, available, finished, numProcesses, numResources);
+		return 0;
+	case 2:
+		int process;
+		cout << "Process number: "; cin >> process;
+		resourceAllocation(alloc, max, need, finished, available, numProcesses, numResources, process);
+	case 3:
+		deadlockDetection(alloc, max, need, request, finished, available, numProcesses, numResources);
+	}
+
 
 	// dispose
 	for (int i = 0; i < numProcesses; i++) {
 		delete[] alloc[i];
 		delete[] max[i];
 		delete[] need[i];
+		delete[] request[i];
 	}
 	delete[] alloc;
 	delete[] max;
 	delete[] need;
+	delete[] request;
 	
 	return 0;
 }

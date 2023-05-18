@@ -14,8 +14,10 @@ bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> fin
 // resource allocation
 bool compare(vector<int> request, int R, int** need, int i);
 bool compare(vector<int> request, vector<int> available, int R);
-bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request, vector<bool> finished, vector<int> available, int P, int R, int i);
+bool resourceAllocation(int** alloc, int** max, int** need, vector<bool> finished, vector<int> available, int P, int R, int i);
 
+// deadlock detection
+bool deadlockDetection(int** alloc, int** max, int** need, int** request, vector<bool> finished, vector<int> available, int P, int R);
 void readMatrix(string fn, int** matrix, int m, int n) {
 	ifstream fi;
 	try {
@@ -65,8 +67,8 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, int m,
 	cout << endl;
 
 	cout << left << "Alloc"
-		<< "\t" << left << "Max"
-		<< "\t" << left << "Need" << endl;
+		<< "\t\t" << left << "Max"
+		<< "\t\t" << left << "Need" << endl;
 
 	cout << setfill('-') << setw(45) << "" << endl;
 
@@ -75,13 +77,13 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, int m,
 		for (int j = 0; j < n; j++) {
 			cout << alloc[i][j] << " ";
 		}
-		cout << "\t";
+		cout << "\t\t";
 		// print max
 		for (int j = 0; j < n; j++) {
 			cout << max[i][j] << " ";
 		}
 		// print need
-		cout << "\t";
+		cout << "\t\t";
 		for (int j = 0; j < n; j++) {
 			cout << need[i][j] << " ";
 		}
@@ -137,7 +139,7 @@ bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> fin
 			}
 		}
 		if (found == false) {
-			cout << "System is not in safe state";
+			cout << "System is not in safe state\n";
 			return false;
 		}
 	}
@@ -149,9 +151,18 @@ bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> fin
 	return true;
 }
 
-bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request, vector<bool> finished, vector<int> available, int P, int R, int i) {
-	if (!compare(request, R, need, i)) {
-		cout << "Overflow.";
+bool resourceAllocation(int** alloc, int** max, int** need, vector<bool> finished, vector<int> available, int P, int R, int i) {
+	vector<int> request;
+
+	cout << "Request: ";
+	for (int i = 0; i < R; i++) {
+		int tmp;
+		cin >> tmp;
+		request.push_back(tmp);
+	}
+
+	if (compare(request, R, need, i) == false) {
+		cout << "Overflow. Resources cannot be allocated.";
 		return false;
 	}
 	else {
@@ -162,17 +173,25 @@ bool resourceAllocation(int** alloc, int** max, int** need, vector<int> request,
 				need[i][j] -= request[j];
 			}
 			tableView(alloc, max, need, available, P, R);
-			if (!safetyAlgo(alloc, need, available, finished, P, R)) {
+			bool isSafe = safetyAlgo(alloc, need, available, finished, P, R);
+			if (isSafe) {
+				cout << "Resources allocated immediately.";
+				return true;
+			}
+			else {
 				for (int j = 0; j < R; j++) {
 					available[j] += request[j];
 					alloc[i][j] -= request[j];
 					need[i][j] += request[j];
 				}
-				tableView(alloc, max, need, available, P, R);
-				safetyAlgo(alloc, need, available, finished, P, R);
+				cout << "Resources cannot be allocated immediately.";
+				return false;
 			}
 		}
-		else safetyAlgo(alloc, need, available, finished, P, R);
+		else {
+			cout << "Resources cannot be allocated.";
+			return false;
+		}
 	}
 	return true;
 }
@@ -193,4 +212,63 @@ bool compare(vector<int> request, vector<int> available, int R) {
 		}
 	}
 	return true;
+}
+
+bool deadlockDetection(int** alloc, int** max, int** need, int** request, vector<bool> finished, vector<int> available, int P, int R) {
+	// init
+	vector<int> work;
+	vector<int> deadSeq;
+
+	for (int i = 0; i < P; i++) {
+		for (int j = 0; j < R; j++) {
+			need[i][j] = request[i][j] - alloc[i][j];
+		}
+	}
+
+	// work = available
+	for (int i = 0; i < available.size(); i++)
+		work.push_back(available[i]);
+
+	int flag = 1;
+	while (flag) {
+		flag = 0;
+		for (int i = 0; i < P; i++) {
+			int count = 0;
+			for (int j = 0; j < R; j++) {
+				if ((finished[i] == 0) && (need[i][j] <= work[j])) {
+					count++;
+					if (count == R) {
+						for (int k = 0; k < R; k++) {
+							work[k] += alloc[i][j];
+							finished[i] = 1;
+							flag = 1;
+						}
+						if (finished[i] == 1) {
+							i = P;
+						}
+					}
+				}
+			}
+		}
+	}
+	flag = 0;
+	int l = 0;
+	for (int i = 0; i < P; i++) {
+		if (finished[i] == 0) {
+			deadSeq.push_back(l);
+			l++;
+			flag = 1;
+		}
+	}
+	if (flag == 1) {
+		cout << "\n\nSystem is in Deadlock and the Deadlock process are\n";
+		for (int i = 0; i < P; i++) {
+			cout << "P" << deadSeq[i] << "\t";
+		}
+		return true;
+	}
+	else {
+		cout << "\nNo Deadlock Occurred";
+		return false;
+	}
 }

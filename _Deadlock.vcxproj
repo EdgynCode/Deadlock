@@ -133,6 +133,7 @@
     <Text Include="alloc.txt" />
     <Text Include="available.txt" />
     <Text Include="max.txt" />
+    <Text Include="request.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="support.h" />

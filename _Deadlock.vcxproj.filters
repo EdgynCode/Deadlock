@@ -29,6 +29,9 @@
     <Text Include="max.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="request.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="support.h">
