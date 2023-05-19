@@ -39,20 +39,21 @@ int main() {
 	cout << "2. Check if resources allocatable.\n";
 	cout << "3. Deadlock detection.\n";
 	cout << "0. Exit.\n";
-	cout << "Choose an option: \n"; cin >> n;
+	cout << "Choose an option: "; cin >> n;
 
 	switch (n) {
 	case 0:
 		return 0;
 	case 1:
 		safetyAlgo(alloc, need, available, finished, numProcesses, numResources);
-		return 0;
 	case 2:
 		int process;
 		cout << "Process number: "; cin >> process;
 		resourceAllocation(alloc, max, need, finished, available, numProcesses, numResources, process);
 	case 3:
-		deadlockDetection(alloc, max, need, request, finished, available, numProcesses, numResources);
+		tableView(alloc, max, need, request, available, numProcesses, numResources);
+		bool isDeadlocked = safetyAlgo(alloc, request, available, finished, numProcesses, numResources);
+		isDeadlocked ? cout << "No deadlock detected." : cout << "Deadlock detected.";
 	}
 
 

@@ -8,6 +8,7 @@ void readMatrix(string fn, int** matrix, int m, int n);
 void readVector(string fn, vector<int>& vec, int n);
 void calculateNeed(int** need, int** alloc, int** max, int m, int n);
 void tableView(int** alloc, int** max, int** need, vector<int> available, int m, int n);
+void tableView(int** alloc, int** max, int** need, int** request, vector<int> available, int m, int n);
 // safety check
 bool safetyAlgo(int** alloc, int** need, vector<int> available, vector<bool> finished, int P, int R);
 
@@ -16,8 +17,6 @@ bool compare(vector<int> request, int R, int** need, int i);
 bool compare(vector<int> request, vector<int> available, int R);
 bool resourceAllocation(int** alloc, int** max, int** need, vector<bool> finished, vector<int> available, int P, int R, int i);
 
-// deadlock detection
-bool deadlockDetection(int** alloc, int** max, int** need, int** request, vector<bool> finished, vector<int> available, int P, int R);
 void readMatrix(string fn, int** matrix, int m, int n) {
 	ifstream fi;
 	try {
@@ -86,6 +85,42 @@ void tableView(int** alloc, int** max, int** need, vector<int> available, int m,
 		cout << "\t\t";
 		for (int j = 0; j < n; j++) {
 			cout << need[i][j] << " ";
+		}
+		cout << "\n";
+	}
+}
+void tableView(int** alloc, int** max, int** need, int** request, vector<int> available, int m, int n) {
+	cout << "Available: ";
+	for (int i = 0; i < available.size(); i++)
+		cout << available[i] << " ";
+	cout << endl;
+
+	cout << left << "Alloc"
+		<< "\t\t" << left << "Max"
+		<< "\t\t" << left << "Need"
+		<< "\t\t" << left << "Request" << endl;
+
+	cout << setfill('-') << setw(60) << "" << endl;
+
+	for (int i = 0; i < m; i++) {
+		// print alloc
+		for (int j = 0; j < n; j++) {
+			cout << alloc[i][j] << " ";
+		}
+		cout << "\t\t";
+		// print max
+		for (int j = 0; j < n; j++) {
+			cout << max[i][j] << " ";
+		}
+		// print need
+		cout << "\t\t";
+		for (int j = 0; j < n; j++) {
+			cout << need[i][j] << " ";
+		}
+		// print request
+		cout << "\t\t";
+		for (int j = 0; j < n; j++) {
+			cout << request[i][j] << " ";
 		}
 		cout << "\n";
 	}
@@ -196,9 +231,9 @@ bool resourceAllocation(int** alloc, int** max, int** need, vector<bool> finishe
 	return true;
 }
 
-bool compare(vector<int> request, int R, int** need, int i) {
+bool compare(vector<int> vec, int R, int** matrix, int i) {
 	for (int j = 0; j < R; j++) {
-		if (request[j] > need[i][j]) {
+		if (vec[j] > matrix[i][j]) {
 			return false;
 		}
 	}
@@ -212,63 +247,4 @@ bool compare(vector<int> request, vector<int> available, int R) {
 		}
 	}
 	return true;
-}
-
-bool deadlockDetection(int** alloc, int** max, int** need, int** request, vector<bool> finished, vector<int> available, int P, int R) {
-	// init
-	vector<int> work;
-	vector<int> deadSeq;
-
-	for (int i = 0; i < P; i++) {
-		for (int j = 0; j < R; j++) {
-			need[i][j] = request[i][j] - alloc[i][j];
-		}
-	}
-
-	// work = available
-	for (int i = 0; i < available.size(); i++)
-		work.push_back(available[i]);
-
-	int flag = 1;
-	while (flag) {
-		flag = 0;
-		for (int i = 0; i < P; i++) {
-			int count = 0;
-			for (int j = 0; j < R; j++) {
-				if ((finished[i] == 0) && (need[i][j] <= work[j])) {
-					count++;
-					if (count == R) {
-						for (int k = 0; k < R; k++) {
-							work[k] += alloc[i][j];
-							finished[i] = 1;
-							flag = 1;
-						}
-						if (finished[i] == 1) {
-							i = P;
-						}
-					}
-				}
-			}
-		}
-	}
-	flag = 0;
-	int l = 0;
-	for (int i = 0; i < P; i++) {
-		if (finished[i] == 0) {
-			deadSeq.push_back(l);
-			l++;
-			flag = 1;
-		}
-	}
-	if (flag == 1) {
-		cout << "\n\nSystem is in Deadlock and the Deadlock process are\n";
-		for (int i = 0; i < P; i++) {
-			cout << "P" << deadSeq[i] << "\t";
-		}
-		return true;
-	}
-	else {
-		cout << "\nNo Deadlock Occurred";
-		return false;
-	}
 }
