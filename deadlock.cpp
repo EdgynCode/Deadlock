@@ -43,17 +43,20 @@ int main() {
 
 	switch (n) {
 	case 0:
-		return 0;
+		break;
 	case 1:
 		safetyAlgo(alloc, need, available, finished, numProcesses, numResources);
+		break;
 	case 2:
 		int process;
 		cout << "Process number: "; cin >> process;
 		resourceAllocation(alloc, max, need, finished, available, numProcesses, numResources, process);
+		break;
 	case 3:
 		tableView(alloc, max, need, request, available, numProcesses, numResources);
 		bool isDeadlocked = safetyAlgo(alloc, request, available, finished, numProcesses, numResources);
 		isDeadlocked ? cout << "No deadlock detected." : cout << "Deadlock detected.";
+		break;
 	}
 
 
