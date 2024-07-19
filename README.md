@@ -1,3 +1,5 @@
+Program that simulate deadlock detection algorithm in Operating System.
+
 User's Guide
 ____________________________________________
 1. Input:
@@ -13,6 +15,7 @@ Check if resources allocatable:
 Deadlock detection:
   Perform the deadlock detection algorithm with the corresponding input.
 
+Chương trình mô phỏng thuật toán phát hiện deadlock trong hệ điều hành.
 
 Hướng dẫn sử dựng
 ____________________________________________
